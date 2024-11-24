@@ -33,12 +33,12 @@ class CustomerController extends GetxController {
         product['price'],
       );
     }
+    Get.snackbar('Success', 'Customer details saved!',
+        snackPosition: SnackPosition.TOP);
 
     // Clear temporary lists
     productList.clear();
     currentCustomer.value = '';
-    Get.snackbar('Success', 'Customer details saved!',
-        snackPosition: SnackPosition.TOP);
 
     // Reload saved customers
     await loadSavedCustomers();
