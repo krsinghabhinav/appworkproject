@@ -2,71 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class TodoController extends GetxController {
-  var todos = <Map<String, dynamic>>[].obs; // List of todos
-  var filteredTodos =
-      <Map<String, dynamic>>[].obs; // Filtered todos based on search query
+  var todos = <Map<String, dynamic>>[].obs; //
   var searchQuery = ''.obs; // Observable search query
   var imagePath = Rx<String?>(null); // Observable image path
 
-  final titleController = TextEditingController(); // Title controller
-  final descriptionController =
-      TextEditingController(); // Description controller
-
-  // Load todos from SharedPreferences
-  Future<void> loadTodos() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? todosString = prefs.getString('todos');
-    if (todosString != null) {
-      todos
-          .assignAll(List<Map<String, dynamic>>.from(json.decode(todosString)));
-      filteredTodos.assignAll(todos); // Initialize filteredTodos
-    }
-  }
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   // Save todos to SharedPreferences
   Future<void> saveTodos() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('todos', json.encode(todos));
+    // SharedPreferences ka instance le rahe hain
+    final prefs = await SharedPreferences.getInstance();
+
+    // 'todos' list ko JSON format mein convert kar rahe hain aur SharedPreferences mein store kar rahe hain
+    await prefs.setString('todos', jsonEncode(todos));
   }
 
-  // Filter todos based on search query
-  void filterTodos() {
-    final query = searchQuery.value.toLowerCase();
-    filteredTodos.assignAll(todos.where((todo) {
-      return todo['title'].toLowerCase().contains(query) ||
-          todo['description'].toLowerCase().contains(query);
-    }).toList());
-  }
+  // Load todos from SharedPreferences
 
-  // Add or update a todo
-  void saveTodo({int? index}) {
-    if (titleController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty) {
-      final newTodo = {
-        'title': titleController.text,
-        'description': descriptionController.text,
-        'image': imagePath.value,
-      };
+  Future<void> loadTodos() async {
+    // SharedPreferences se instance le rahe hain
+    final prefs = await SharedPreferences.getInstance();
 
-      if (index != null) {
-        // Update the existing todo at the given index
-        todos[index] = newTodo;
-        filteredTodos[index] =
-            newTodo; // Make sure the filteredTodos list is updated too
-      } else {
-        // Add a new todo if no index is provided
-        todos.add(newTodo);
-        filteredTodos.add(newTodo);
-      }
-      saveTodos();
+    // 'todos' key se saved string ko load kar rahe hain
+    final todosString = prefs.getString('todos');
+
+    // Agar 'todosString' null nahi hai, toh decode karenge aur todos list ko update karenge
+    if (todosString != null) {
+      todos.value = List<Map<String, dynamic>>.from(jsonDecode(todosString));
     }
   }
 
-  // Pick an image
+  // Pick an image from gallery
   Future<void> pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -75,25 +45,57 @@ class TodoController extends GetxController {
     }
   }
 
+  void saveTodo({int? index}) {
+    // Step 1: Check if title and description are not empty
+    if (titleController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty) {
+      // Step 2: Create a new todo item with title, description, and image
+      final newTodo = {
+        'title': titleController.text, // Title from titleController
+        'description': descriptionController
+            .text, // Description from descriptionController
+        'image': imagePath.value, // Image path from imagePath observable
+      };
+
+      // Step 3: If index is not null, update the existing todo at that index
+      // Else, add the new todo to the list
+      if (index != null) {
+        todos[index] = newTodo; // Update todo at the specified index
+      } else {
+        todos.add(newTodo); // Add the new todo to the list
+      }
+
+      // Step 4: Save the updated list of todos to SharedPreferences
+      saveTodos(); // Save todos to SharedPreferences
+    }
+  }
+
   // Delete a todo
   void deleteTodo(int index) {
     todos.removeAt(index);
-    filteredTodos.removeAt(index);
     saveTodos();
+  }
+
+  // Filter todos based on search query
+  List<Map<String, dynamic>> get filteredTodos {
+    final query = searchQuery.value.toLowerCase();
+    return todos.where((todo) {
+      return todo['title'].toLowerCase().contains(query);
+    }).toList();
   }
 
   @override
   void onInit() {
     super.onInit();
-    loadTodos(); // Load todos when controller is initialized
-    searchQuery
-        .listen((query) => filterTodos()); // Listen for changes in search query
+    loadTodos();
+    searchQuery.listen(
+        (_) => update()); // Update filteredTodos when searchQuery changes
   }
 
   @override
   void onClose() {
-    super.onClose();
     titleController.dispose();
     descriptionController.dispose();
+    super.onClose();
   }
 }

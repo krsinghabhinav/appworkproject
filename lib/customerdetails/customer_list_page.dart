@@ -8,14 +8,14 @@ import 'package:printing/printing.dart';
 class CustomerListPage extends StatelessWidget {
   final CustomerController customerController = Get.find<CustomerController>();
 
-  Future<void> _generatePdf(
+  Future<void> generatePdf(
       String customerName, List<Map<String, dynamic>> products) async {
     final pdf = pw.Document();
 
     // Calculate total price of the products
     double totalPrice = products.fold(0.0, (sum, item) => sum + item['price']);
 
-    // QR Code data (Customer name, product count, total price)
+    // QR Code data
     String qrData = 'Customer: $customerName\n'
         'Total Products: ${products.length}\n'
         'Total Price: \$${totalPrice.toStringAsFixed(2)}';
@@ -191,7 +191,7 @@ class CustomerListPage extends StatelessWidget {
                 title: Text(customer['customer']),
                 trailing: IconButton(
                   icon: Icon(Icons.picture_as_pdf),
-                  onPressed: () => _generatePdf(
+                  onPressed: () => generatePdf(
                     customer['customer'],
                     customer['products'],
                   ),
