@@ -1,4 +1,6 @@
 import 'package:appworkproject/todoappsharepreferance/constent/colors.dart';
+import 'package:appworkproject/todoappsharepreferance/database/dbhendler.dart';
+import 'package:appworkproject/todoappsharepreferance/model/todomodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/addtaskcontroller.dart';
@@ -157,13 +159,28 @@ class _AddtaskState extends State<Addtask> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               String description = addcontroller
                                   .descriptionController.value.text;
                               String name =
                                   addcontroller.titleController.value.text;
                             }
+                            await DBHelper()
+                                .inserData(Todomodel(
+                              title: addcontroller.titleController.value.text,
+                              description: addcontroller
+                                  .descriptionController.value.text,
+                            ))
+                                .then((value) {
+                              print("Data is inserted ");
+                            });
+
+                            var data = await DBHelper().readData();
+
+                            print(data.map((element) => print(
+                                  element.toMap(),
+                                )));
                           },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

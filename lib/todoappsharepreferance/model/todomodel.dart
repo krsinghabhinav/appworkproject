@@ -2,13 +2,13 @@ class Todomodel {
   final int? id;
   final String title;
   final String description;
-  int check;
+  int checkbox;
 
   Todomodel({
     this.id,
     required this.title,
     required this.description,
-    this.check = 0,
+    this.checkbox = 0,
   });
 
   // Factory constructor to create an instance from a Map
@@ -17,7 +17,7 @@ class Todomodel {
       id: map['id'],
       title: map['title'],
       description: map['description'],
-      check: map['check'], // Default to 0 if null
+      checkbox: map['checkbox'], // Default to 0 if null
     );
   }
 
@@ -27,7 +27,7 @@ class Todomodel {
       'id': id,
       'title': title,
       'description': description,
-      'check': check,
+      'checkbox': checkbox,
     };
   }
 }
