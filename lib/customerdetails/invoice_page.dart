@@ -95,7 +95,7 @@ class InvoicePage extends StatelessWidget {
                       final product = customerController.productList[index];
                       return ListTile(
                         title: Text(product['product']),
-                        subtitle: Text('\$${product['price']}'),
+                        trailing: Text('\$${product['price']}'),
                       );
                     },
                   ),

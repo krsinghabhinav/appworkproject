@@ -17,6 +17,11 @@ class DatabaseHelper {
 
   // Initialize the database
   Future<Database> _initDatabase() async {
+    //getDatabasesPath()== Ye method application-specific database directory ka path return karta hai.
+    // Is directory ka use aap databases ko store karne ke liye karte hain (e.g., SQLite databases).
+    //     Use Case:
+    // Database files (e.g., SQLite ya custom database formats) store karna.
+    // Backend data (e.g., tables or records) ka storage.
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'invoice_app.db');
 
