@@ -22,8 +22,8 @@ class _AddtaskState extends State<Addtask> {
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
         onTap: () {
-          addcontroller.titelFocus.value.unfocus();
-          addcontroller.descriptionFocus.value.unfocus();
+          addcontroller.titleFocus.unfocus();
+          addcontroller.descriptionFocus.unfocus();
         },
         child: SingleChildScrollView(
           child: Column(
@@ -74,9 +74,9 @@ class _AddtaskState extends State<Addtask> {
                             borderRadius: BorderRadius.circular(23)),
                         child: TextFormField(
                           textAlign: TextAlign.left,
-                          focusNode: addcontroller.titelFocus.value,
+                          focusNode: addcontroller.titleFocus,
                           textInputAction: TextInputAction.next,
-                          controller: addcontroller.titleController.value,
+                          controller: addcontroller.titleController,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12),
                             prefixIcon: Icon(
@@ -118,9 +118,9 @@ class _AddtaskState extends State<Addtask> {
                             borderRadius: BorderRadius.circular(23)),
                         child: TextFormField(
                           textAlign: TextAlign.left,
-                          focusNode: addcontroller.descriptionFocus.value,
+                          focusNode: addcontroller.descriptionFocus,
                           textInputAction: TextInputAction.next,
-                          controller: addcontroller.descriptionController.value,
+                          controller: addcontroller.descriptionController,
                           maxLines: 2,
                           decoration: InputDecoration(
                             // contentPadding: EdgeInsets.all(12),
