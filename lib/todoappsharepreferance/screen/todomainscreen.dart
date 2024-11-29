@@ -15,7 +15,7 @@ class Todomainscreen extends StatefulWidget {
 }
 
 class _TodomainscreenState extends State<Todomainscreen> {
-  final addcontroller = Get.put(Addtaskcontroller());
+  final Addtaskcontroller addcontroller = Get.put(Addtaskcontroller());
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +87,25 @@ class _TodomainscreenState extends State<Todomainscreen> {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text("No tasks available"));
                 }
+                // Filter tasks based on search input
+                final tasks = snapshot.data!.where((task) {
+                  final query =
+                      addcontroller.searchController.text.toLowerCase();
+                  return task.title.toLowerCase().contains(query) ||
+                      task.description.toLowerCase().contains(query);
+                }).toList();
+
+                if (tasks.isEmpty) {
+                  return const Center(
+                      child: Text("No tasks match your search."));
+                }
+
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: snapshot.data!.length,
+                  itemCount: tasks.length,
                   itemBuilder: (context, index) {
-                    final task = snapshot.data![index];
-                    return todotask(task: task);
+                    final task = tasks[index];
+                    return TodoTask(task: task);
                   },
                 );
               },
@@ -137,7 +150,7 @@ class _TodomainscreenState extends State<Todomainscreen> {
           focusNode: addcontroller.searchFocus,
           controller: addcontroller.searchController,
           onChanged: (value) {
-            // Handle search logic
+            setState(() {}); // Trigger rebuild for filtering
           },
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.only(top: 12),

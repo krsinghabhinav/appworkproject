@@ -1,21 +1,11 @@
-import 'package:appworkproject/customerdetails/auth/Register.dart';
-import 'package:appworkproject/customerdetails/splash_screen.dart';
-import 'package:appworkproject/sss/TodoController.dart';
-import 'package:appworkproject/sss/TodoListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'customerdetails/controller/customer_controller.dart';
-import 'regg/profile_registration.dart';
-import 'sharepref/register_page.dart';
+import 'imagesqflite/homepage.dart';
 import 'sqflitetest/DatabaseController.dart';
-import 'sqflitetest/ShowDataScreen.dart';
-import 'sqflitetest/sqflitetest.dart';
-import 'sss/toosoo.dart';
-import 'todoappsharepreferance/constent/colors.dart';
-import 'todoappsharepreferance/screen/todomainscreen.dart';
-import 'todoappsharepreferance/showlsittodoscreen.dart';
+import 'sss/TodoController.dart';
 
 void main() {
   // Initialize controllers with Get
@@ -75,7 +65,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: Todomainscreen(), // Ensure the correct widget name is used
+      home: HomePage(), // Ensure the correct widget name is used
     );
   }
 }

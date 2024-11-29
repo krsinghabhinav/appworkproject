@@ -49,4 +49,35 @@ class DBHelper {
     //    print(lsit);
     return list.map((map) => Todomodel.fromMap(map)).toList();
   }
+
+  delete(Todomodel todo) async {
+    Database? db =
+        await database; // Assuming `database` is your database connection
+    int result = await db!.delete(
+      'todoTable',
+      where: 'id = ?',
+      whereArgs: [todo.id], // Pass the value as a list
+    );
+    return result; // Optionally return the result (number of rows affected)
+  }
+
+  update(Todomodel todo) async {
+    Database? db = await database;
+
+    // The data to update
+    Map<String, dynamic> values = {
+      'title': todo.title,
+      'description': todo.description,
+    };
+
+    // Perform the update
+    int result = await db!.update(
+      'todoTable', // Table name
+      values, // The updated values
+      where: 'id = ?', // Condition (update where the id matches)
+      whereArgs: [todo.id], // The argument for the id
+    );
+
+    return result; // Returns the number of rows affected
+  }
 }

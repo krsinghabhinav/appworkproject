@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 
 class Addtaskcontroller extends GetxController {
   final DBHelper db = DBHelper();
-
+  // Reactive List to store tasks
+  final tasks = <Todomodel>[].obs;
   // Controllers
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -25,6 +26,20 @@ class Addtaskcontroller extends GetxController {
       Get.snackbar("Error", "Failed to fetch data: $e",
           snackPosition: SnackPosition.BOTTOM);
       return [];
+    }
+  }
+
+  Future<void> updateTask(Todomodel updatedTask) async {
+    try {
+      // Call DBHelper's update method
+      await db.update(updatedTask);
+      // Reload tasks after update
+      tasks.value = await db.readData();
+      Get.snackbar("Success", "Task updated successfully",
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update task: $e",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
